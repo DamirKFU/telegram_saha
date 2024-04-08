@@ -21,3 +21,15 @@ class AnswerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = api.models.Answer
         fields = ["id", "text"]
+
+
+class AnswerUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = api.models.AnswerUser
+        fields = ["id"]
+
+
+class AnswerUserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = api.models.AnswerUser
+        fields = ["user", "answer", "question"]

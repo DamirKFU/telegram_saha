@@ -59,10 +59,41 @@ class Answer(django.db.models.Model):
         "текст ответа",
         max_length=100,
     )
-    is_true = django.db.models.BooleanField(
-        default=False,
+    ball = django.db.models.PositiveIntegerField(
+        "количество балов",
+        default=0,
     )
 
     class Meta:
         verbose_name = "ответ"
         verbose_name_plural = "ответы"
+
+
+class AnswerUser(django.db.models.Model):
+    user = django.db.models.IntegerField(
+        "номер теста",
+    )
+    answer = django.db.models.ForeignKey(
+        Answer,
+        on_delete=django.db.models.CASCADE,
+        verbose_name="ответ",
+        related_name="ansusers",
+        related_query_name="ansusers",
+        help_text="выберите ответ",
+    )
+    question = django.db.models.ForeignKey(
+        Question,
+        on_delete=django.db.models.CASCADE,
+        verbose_name="вопрос",
+        related_name="ansusers",
+        related_query_name="ansusers",
+        help_text="выберите вопрос",
+    )
+
+    class Meta:
+        verbose_name = "ответ пользователя"
+        verbose_name_plural = "ответы пользователя"
+        unique_together = (
+            "user",
+            "answer",
+        )

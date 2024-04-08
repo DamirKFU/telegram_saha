@@ -4,6 +4,14 @@ from pathlib import Path
 import dotenv
 
 
+__all__ = []
+
+
+def true_load(value: str, defoult: bool) -> bool:
+    env_value = os.getenv(value, str(defoult)).lower()
+    return env_value in ("", "true", "yes", "1", "y")
+
+
 dotenv.load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,7 +21,9 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "ABOBA")
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = list(
+    map(str.strip, os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")),
+)
 
 
 INSTALLED_APPS = [
@@ -31,7 +41,6 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -89,6 +98,14 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": [],
     "DEFAULT_PAGINATION_CLASS": "api.pagination.StandardResultsSetPagination",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/day",
+        "user": "1000/day",
+    },
 }
 
 LANGUAGE_CODE = "ru"
